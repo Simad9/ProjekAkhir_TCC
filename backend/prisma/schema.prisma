@@ -46,7 +46,7 @@ model Menu {
   id_menu   Int    @id @default(autoincrement())
   nama_menu String
   deskripsi String @db.Text
-  harga     String
+  harga     Int
   gambar    String @db.Text
 
   kategori            Kategori @relation(fields: [kategoriId_kategori], references: [id_kategori])

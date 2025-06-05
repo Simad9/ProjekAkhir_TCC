@@ -1,3 +1,7 @@
+GET http://localhost:5000/api/menu
+Content-Type: application/json
+
+###
 GET http://localhost:5000/mahasiswa
 Content-Type: application/json
 
