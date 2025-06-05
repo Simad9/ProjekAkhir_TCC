@@ -14,4 +14,61 @@ model User {
   refresh_token String?  @db.Text
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  keranjang Keranjang[]
+  Pesanan   Pesanan[]
+}
+
+model Keranjang {
+  id_kerangjang Int    @id @default(autoincrement())
+  jumlah        Int
+  catatan       String @db.LongText
+
+  User        User? @relation(fields: [userId_user], references: [id_user])
+  userId_user Int?
+  menu        Menu  @relation(fields: [menuId_menu], references: [id_menu])
+  menuId_menu Int
+}
+
+model Pesanan {
+  id_pesanan  Int      @id @default(autoincrement())
+  status      String
+  total_harga Int
+  waktu_pesan DateTime
+
+  User        User @relation(fields: [userId_user], references: [id_user])
+  userId_user Int
+
+  Pesan_Detail Pesan_Detail[]
+}
+
+model Menu {
+  id_menu   Int    @id @default(autoincrement())
+  nama_menu String
+  deskripsi String @db.Text
+  harga     String
+  gambar    String @db.Text
+
+  kategori            Kategori @relation(fields: [kategoriId_kategori], references: [id_kategori])
+  kategoriId_kategori Int
+
+  Pesan_Detail Pesan_Detail[]
+  Keranjang    Keranjang[]
+}
+
+model Kategori {
+  id_kategori   Int    @id @default(autoincrement())
+  nama_kategori String
+
+  Menu Menu[]
+}
+
+model Pesan_Detail {
+  id_detail         Int     @id @default(autoincrement())
+  jumlah            Int
+  catatan           String
+  pesanan           Pesanan @relation(fields: [pesananId_pesanan], references: [id_pesanan])
+  menu              Menu    @relation(fields: [menuId_menu], references: [id_menu])
+  menuId_menu       Int
+  pesananId_pesanan Int
 }
