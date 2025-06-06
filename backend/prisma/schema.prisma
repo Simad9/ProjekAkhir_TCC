@@ -34,10 +34,14 @@ model Pesanan {
   id_pesanan  Int      @id @default(autoincrement())
   status      String
   total_harga Int
-  waktu_pesan DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  id_firebase String
 
   User        User @relation(fields: [userId_user], references: [id_user])
   userId_user Int
+  menu        Menu @relation(fields: [menuId_menu], references: [id_menu])
+  menuId_menu Int
 
   Pesan_Detail Pesan_Detail[]
 }
@@ -54,6 +58,7 @@ model Menu {
 
   Pesan_Detail Pesan_Detail[]
   Keranjang    Keranjang[]
+  Pesanan      Pesanan[]
 }
 
 model Kategori {

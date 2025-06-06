@@ -4,26 +4,20 @@ const prisma = new PrismaClient();
 async function seedPesanan() {
   const datas = [
     {
-      status: "Diproses",
+      status: "Konfirmasi",
       total_harga: 100000,
-      waktu_pesan: new Date(),
-      userId_user: 1
+      userId_user: 1,
+      menuId_menu: 1,
     },
-    {
-      status: "Selesai",
-      total_harga: 50000,
-      waktu_pesan: new Date(),
-      userId_user: 2
-    }
   ];
 
-   for (const data of datas){
+  for (const data of datas) {
     await prisma.pesanan.create({
-      data: data
-    })
+      data: data,
+    });
   }
 
-   console.log("Pesanan seeded successfully.");
+  console.log("Pesanan seeded successfully.");
 }
 
 module.exports = { seedPesanan };

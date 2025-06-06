@@ -1,4 +1,6 @@
 const Pesanan = require("../models/pesananModels");
+const db = require("../lib/firebase");
+const { collection, addDoc, updateDoc, doc } = require("firebase/firestore");
 
 // getPesanan
 const getPesanan = async (req, res) => {
@@ -22,7 +24,7 @@ const getPesananById = async (req, res) => {
     const id = parseInt(req.params.id);
     const result = await Pesanan.getPesananById(id);
     res.status(200).json({
-      message: "success",
+      message: "Pesanan berhasil dibuat",
       data: result,
     });
   } catch (error) {
@@ -37,9 +39,21 @@ const getPesananById = async (req, res) => {
 const createPesanan = async (req, res) => {
   try {
     const data = req.body;
-    const result = await Pesanan.createPesanan(data);
-    res.status(200).json({
-      message: "success",
+
+    // Simpan data ke Firestore
+    const colRef = collection(db, "orders");
+    const docRef = await addDoc(colRef, {
+      ...data,
+      status: "konfirmasi", // Status awal pesanan
+    });
+
+    // Query ke MySQL untuk menyimpan data pesanan
+    data.id_firebase = docRef.id;
+    const result = await Pesanan.createPesanan(data); // Pesanan.createPesanan adalah query ke MySQL
+
+    // Response
+    res.status(201).json({
+      message: "Pesanan berhasil dibuat",
       data: result,
     });
   } catch (error) {
@@ -53,14 +67,29 @@ const createPesanan = async (req, res) => {
 // updatePesanan
 const updatePesanan = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id); // ID pesanan di MySQL
     const data = req.body;
-    const result = await Pesanan.updatePesanan(id, data);
+
+    // Query ke MySQL untuk update pesanan
+    const result = await Pesanan.updatePesanan(id, data); // Pesanan.updatePesanan adalah query ke MySQL
+
+    // Update status di Firestore
+    const docRef = doc(db, "orders", result.id_firebase);
+
+    console.log(docRef);
+
+    // Jika dokumen ada, update status
+    await updateDoc(docRef, {
+      status: data.status,
+    });
+
+    // Response
     res.status(200).json({
-      message: "success",
+      message: "Status pesanan berhasil diperbarui",
       data: result,
     });
   } catch (error) {
+    console.error("Terjadi kesalahan:", error);
     res.status(500).json({
       message: "Terjadi Kesalahan",
       error: error.message,
@@ -73,6 +102,23 @@ const deletePesanan = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const result = await Pesanan.deletePesanan(id);
+    res.status(200).json({
+      message: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi Kesalahan",
+      error: error.message,
+    });
+  }
+};
+
+// Notifikasi Pesanan
+const notifikasiPesanan = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const result = await Pesanan.notifikasiPesanan(id);
     res.status(200).json({
       message: "success",
       data: result,
