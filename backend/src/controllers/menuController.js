@@ -1,4 +1,5 @@
 const Menu = require("../models/menuModels");
+const validasiUploadImage = require("../utils/validasiUploadImage");
 
 // getMenu
 const getMenu = async (req, res) => {
@@ -38,7 +39,22 @@ const getMenuById = async (req, res) => {
 const createMenu = async (req, res) => {
   try {
     const data = req.body;
+
+    // Harga ubah jadi Int
+    data.harga = parseInt(data.harga);
+
+    // Kategori Id ubah jadi Int
+    data.kategoriId_kategori = parseInt(data.kategoriId_kategori);
+
+    // Tambah Gambar
+    if (req.file) {
+      data.gambar = await validasiUploadImage(req.file);
+    }
+
+    // Query
     const result = await Menu.createMenu(data);
+
+    // Hasil
     res.status(200).json({
       message: "success",
       data: result,
@@ -56,7 +72,22 @@ const updateMenu = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const data = req.body;
+
+    // Harga ubah jadi Int
+    data.harga = parseInt(data.harga);
+
+    // Kategori Id ubah jadi Int
+    data.kategoriId_kategori = parseInt(data.kategoriId_kategori);
+
+    // Tambah Gambar
+    if (req.file) {
+      data.gambar = await validasiUploadImage(req.file);
+    }
+
+    // Query
     const result = await Menu.updateMenu(id, data);
+
+    // Hasil
     res.status(200).json({
       message: "success",
       data: result,
