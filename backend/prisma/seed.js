@@ -9,7 +9,6 @@ const { seedPesanan } = require("./seeder/pesananSeeder.js");
 const { seedPesanDetail } = require("./seeder/pesanDetailSeeder.js");
 const { seedKeranjang } = require("./seeder/keranjangSeeder.js");
 
-
 // main
 async function main() {
   // Hapus Data
@@ -19,7 +18,6 @@ async function main() {
   // await prisma.pesanan.deleteMany();
   // await prisma.pesan_Detail.deleteMany();
   // await prisma.keranjang.deleteMany();
-
   // Seeder
   // await seedUsers();
   // await seedKategori();
@@ -27,7 +25,6 @@ async function main() {
   // await seedPesanan();
   // await seedPesanDetail();
   // await seedKeranjang();
-
 }
 
 main()

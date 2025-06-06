@@ -11,7 +11,7 @@ model User {
   id_user       Int      @id @default(autoincrement())
   username      String   @unique
   password      String
-  refresh_token String?  @db.Text
+  refresh_token String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

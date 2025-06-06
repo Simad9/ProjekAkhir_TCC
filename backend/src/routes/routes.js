@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Controllers
+const authRoute = require("./authRoutes");
 const kategoriRoute = require("./kategoriRoutes");
 const keranjangRoute = require("./keranjangRoutes");
 const menuRoute = require("./menuRoutes");
@@ -10,6 +11,7 @@ const pesanDetailRoute = require("./pesanDetailRoutes");
 const userRoute = require("./userRoutes");
 
 // Routes
+router.use("/", authRoute);
 router.use("/kategori", kategoriRoute);
 router.use("/keranjang", keranjangRoute);
 router.use("/menu", menuRoute);

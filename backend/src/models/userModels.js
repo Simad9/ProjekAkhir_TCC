@@ -57,6 +57,35 @@ const deleteUser = async (id) => {
   return result;
 };
 
+const getUserByRefreshToken = async (token) => {
+  const result = await prisma.user.findUnique({
+    where: {
+      refresh_token: token,
+    },
+  });
+  return result;
+};
+
+const updateByRefreshToken = async (token, data) => {
+  const result = await prisma.user.update({
+    where: {
+      refresh_token: token,
+    },
+    data: data,
+  });
+  return result;
+};
+
+const updateById = async (id, data) => {
+  const result = await prisma.user.update({
+    where: {
+      id_user: id,
+    },
+    data: data,
+  });
+  return result;
+};
+
 module.exports = {
   getUser,
   getUserById,
@@ -64,4 +93,7 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  getUserByRefreshToken,
+  updateByRefreshToken,
+  updateById,
 };
