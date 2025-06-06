@@ -19,7 +19,7 @@ const getKeranjang = async (req, res) => {
 // getKeranjangById
 const getKeranjangById = async (req, res) => {
   try {
-    const keranjangId = req.params.id;
+    const keranjangId = parseInt(req.params.id);
     const data = await Keranjang.getKeranjangById(keranjangId);
     res.status(200).json({
       message: "success",
@@ -53,7 +53,7 @@ const createKeranjang = async (req, res) => {
 // updateKeranjang
 const updateKeranjang = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const data = req.body;
     const result = await Keranjang.updateKeranjang(id, data);
     res.status(200).json({
@@ -71,7 +71,7 @@ const updateKeranjang = async (req, res) => {
 // deleteKeranjang
 const deleteKeranjang = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await Keranjang.deleteKeranjang(id);
     res.status(200).json({
       message: "success",

@@ -20,7 +20,7 @@ const getMenu = async (req, res) => {
 // getMenuById
 const getMenuById = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await Menu.getMenuById(id);
     res.status(200).json({
       message: "success",
@@ -54,7 +54,7 @@ const createMenu = async (req, res) => {
 // updateMenu
 const updateMenu = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const data = req.body;
     const result = await Menu.updateMenu(id, data);
     res.status(200).json({
@@ -72,7 +72,7 @@ const updateMenu = async (req, res) => {
 // deleteMenu
 const deleteMenu = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await Menu.deleteMenu(id);
     res.status(200).json({
       message: "success",

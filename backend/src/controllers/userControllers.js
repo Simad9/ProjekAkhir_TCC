@@ -1,4 +1,5 @@
 const User = require("../models/userModels");
+const bcrypt = require("bcrypt");
 
 // getUser
 const getUser = async (req, res) => {
@@ -19,7 +20,7 @@ const getUser = async (req, res) => {
 // getUserById
 const getUserById = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await User.getUserById(id);
     res.status(200).json({
       message: "success",
@@ -37,6 +38,15 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const data = req.body;
+    data.password = bcrypt.hashSync(data.password, 5);
+
+    const existingUser = await User.getUserByUsername(data.username);
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Username harus unik",
+      });
+    }
+
     const result = await User.createUser(data);
     res.status(200).json({
       message: "success",
@@ -53,8 +63,17 @@ const createUser = async (req, res) => {
 // updateUser
 const updateUser = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const data = req.body;
+    data.password = bcrypt.hashSync(data.password, 5);
+
+    const existingUser = await User.getUserByUsername(data.username);
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Username harus unik",
+      });
+    }
+
     const result = await User.updateUser(id, data);
     res.status(200).json({
       message: "success",
@@ -71,7 +90,7 @@ const updateUser = async (req, res) => {
 // deleteUser
 const deleteUser = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await User.deleteUser(id);
     res.status(200).json({
       message: "success",

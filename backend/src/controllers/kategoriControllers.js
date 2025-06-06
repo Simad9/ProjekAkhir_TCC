@@ -19,7 +19,7 @@ const getKategori = async (req, res) => {
 //   getKategoriById,
 const getKategoriById = async (req, res) => {
   try {
-    const ketgoriId = req.params.id;
+    const ketgoriId = parseInt(req.params.id);
     const data = await Kategori.getKategoriById(ketgoriId);
     res.status(200).json({
       message: "success",
@@ -53,7 +53,7 @@ const createKategori = async (req, res) => {
 //   updateKategori,
 const updateKategori = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const data = req.body;
     const result = await Kategori.updateKategori(id, data);
     res.status(200).json({
@@ -71,7 +71,7 @@ const updateKategori = async (req, res) => {
 //   deleteKategori,
 const deleteKategori = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await Kategori.deleteKategori(id);
     res.status(200).json({
       message: "success",

@@ -20,9 +20,9 @@ model User {
 }
 
 model Keranjang {
-  id_kerangjang Int    @id @default(autoincrement())
-  jumlah        Int
-  catatan       String @db.LongText
+  id_keranjang Int    @id @default(autoincrement())
+  jumlah       Int
+  catatan      String @db.LongText
 
   User        User? @relation(fields: [userId_user], references: [id_user])
   userId_user Int?

@@ -19,7 +19,7 @@ const getPesanDetail = async (req, res) => {
 // getPesanDetailById
 const getPesanDetailById = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await pesanDetail.getPesanDetailById(id);
     res.status(200).json({
       message: "success",
@@ -53,7 +53,7 @@ const createPesanDetail = async (req, res) => {
 // updatePesanDetail
 const updatePesanDetail = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const data = req.body;
     const result = await pesanDetail.updatePesanDetail(id, data);
     res.status(200).json({
@@ -71,7 +71,7 @@ const updatePesanDetail = async (req, res) => {
 // deletePesanDetail
 const deletePesanDetail = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const result = await pesanDetail.deletePesanDetail(id);
     res.status(200).json({
       message: "success",

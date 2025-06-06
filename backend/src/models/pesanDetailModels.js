@@ -12,7 +12,7 @@ const getPesanDetail = async () => {
 const getPesanDetailById = async (id) => {
   const result = await prisma.pesan_Detail.findUnique({
     where: {
-      id_pesan_Detail: id,
+      id_detail: id,
     },
   });
   return result;
@@ -30,7 +30,7 @@ const createPesanDetail = async (data) => {
 const updatePesanDetail = async (id, data) => {
   const result = await prisma.pesan_Detail.update({
     where: {
-      id_pesan_Detail: id,
+      id_detail: id,
     },
     data: data,
   });
@@ -41,7 +41,7 @@ const updatePesanDetail = async (id, data) => {
 const deletePesanDetail = async (id) => {
   const result = await prisma.pesan_Detail.delete({
     where: {
-      id_pesan_Detail: id,
+      id_detail: id,
     },
   });
   return result;
