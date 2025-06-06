@@ -51,10 +51,17 @@ const createPesanan = async (req, res) => {
     data.id_firebase = docRef.id;
     const result = await Pesanan.createPesanan(data); // Pesanan.createPesanan adalah query ke MySQL
 
+    // Data notif
+    const notif = {
+      title: "Pesanan Baru",
+      body: `Pesanan baru dengan ID ${result.id_pesanan} telah dibuat.`,
+    };
+
     // Response
     res.status(201).json({
       message: "Pesanan berhasil dibuat",
       data: result,
+      notif: notif,
     });
   } catch (error) {
     res.status(500).json({
@@ -76,20 +83,34 @@ const updatePesanan = async (req, res) => {
     // Update status di Firestore
     const docRef = doc(db, "orders", result.id_firebase);
 
-    console.log(docRef);
-
     // Jika dokumen ada, update status
     await updateDoc(docRef, {
       status: data.status,
     });
 
+    // Notif
+    let notif;
+    if (data.status == "Proses") {
+      notif = {
+        title: "Pesanan Baru",
+        body: `Pesanan baru dengan ID ${result.id_pesanan} telah dibuat.`,
+      };
+    } else if (data.status == "Selesai") {
+      notif = {
+        title: "Pesanan Selesai",
+        body: `Pesanan dengan ID ${result.id_pesanan} telah selesai.`,
+      };
+    } else {
+      notif = null;
+    }
+
     // Response
     res.status(200).json({
       message: "Status pesanan berhasil diperbarui",
       data: result,
+      notif: notif,
     });
   } catch (error) {
-    console.error("Terjadi kesalahan:", error);
     res.status(500).json({
       message: "Terjadi Kesalahan",
       error: error.message,

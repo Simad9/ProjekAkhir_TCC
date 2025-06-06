@@ -32,7 +32,7 @@ model Keranjang {
 
 model Pesanan {
   id_pesanan  Int      @id @default(autoincrement())
-  status      String
+  status      Status
   total_harga Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -76,4 +76,10 @@ model Pesan_Detail {
   menu              Menu    @relation(fields: [menuId_menu], references: [id_menu])
   menuId_menu       Int
   pesananId_pesanan Int
+}
+
+enum Status {
+  Konfirmasi
+  Proses
+  Selesai
 }
