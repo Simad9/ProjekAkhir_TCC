@@ -12,7 +12,7 @@ model User {
   username      String   @unique
   password      String
   refresh_token String?  @unique
-  role          Role
+  role          Role     @default(public)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -37,7 +37,7 @@ model Pesanan {
   total_harga Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  id_firebase String
+  id_firebase String?
 
   User        User @relation(fields: [userId_user], references: [id_user])
   userId_user Int

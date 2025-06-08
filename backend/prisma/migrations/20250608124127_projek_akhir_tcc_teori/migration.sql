@@ -4,6 +4,7 @@ CREATE TABLE `User` (
     `username` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `refresh_token` VARCHAR(191) NULL,
+    `role` ENUM('public', 'admin') NOT NULL DEFAULT 'public',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -26,10 +27,11 @@ CREATE TABLE `Keranjang` (
 -- CreateTable
 CREATE TABLE `Pesanan` (
     `id_pesanan` INTEGER NOT NULL AUTO_INCREMENT,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('Konfirmasi', 'Proses', 'Selesai') NOT NULL,
     `total_harga` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `id_firebase` VARCHAR(191) NULL,
     `userId_user` INTEGER NOT NULL,
     `menuId_menu` INTEGER NOT NULL,
 
