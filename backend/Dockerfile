@@ -10,7 +10,6 @@ COPY . .
 
 # Jalankan prisma generate untuk generate prisma client
 RUN npx prisma generate
-RUN npx prisma migrate deploy
 
 EXPOSE 5000
 
