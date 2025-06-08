@@ -1,5 +1,5 @@
 runtime: nodejs20
-service: tours-frontend-prakcc
+service: rumah-makan-tcc-teori
 instance_class: F1
 
 handlers:
