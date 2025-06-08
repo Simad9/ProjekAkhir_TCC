@@ -7,10 +7,12 @@ async function seedUsers() {
     {
       username: "Jhondoe123",
       password: bcrypt.hashSync("Jhondoe123", 5),
+      role: "admin",
     },
     {
       username: "123",
       password: bcrypt.hashSync("123", 5),
+      role: "public",
     },
   ];
 
