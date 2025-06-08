@@ -1,7 +1,17 @@
 GET http://localhost:5000/api/menu
 Content-Type: application/json
 
+{
+  "username" : "123",
+  "password" : "123"
+}
+
 ###
+GET https://tcc-projek-akhir-13926268988.us-central1.run.app/api/menu
+Content-Type: application/json
+
+
+###################
 GET http://localhost:5000/mahasiswa
 Content-Type: application/json
 

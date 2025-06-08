@@ -11,6 +11,9 @@ COPY . .
 # Jalankan prisma generate untuk generate prisma client
 RUN npx prisma generate
 
+# Jalankan cat .env
+RUN cat .env
+
 EXPOSE 5000
 
 CMD ["node", "index.js"]
