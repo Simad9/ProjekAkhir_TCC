@@ -13,6 +13,8 @@ steps:
         "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
         "-t",
         "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
+        "-f",
+        "path/to/Dockerfile",
         ".",
       ]
 
