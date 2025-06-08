@@ -12,6 +12,7 @@ model User {
   username      String   @unique
   password      String
   refresh_token String?  @unique
+  role          Role
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -82,4 +83,9 @@ enum Status {
   Konfirmasi
   Proses
   Selesai
+}
+
+enum Role {
+  public
+  admin
 }
