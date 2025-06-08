@@ -1,9 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "../pages/LoginPage.jsx";
-// import ProtectedRoute from "./ProtectedRoute.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import { useAuthContext } from "../auth/AuthProvider";
 import HomePage from "../pages/HomePage.jsx";
+import UserDashboard from "../pages/UserDashboard.jsx";
+import ProfilePage from "../pages/ProfilePage.jsx";
+import OrderPage from "../pages/OrderPage.jsx";
 
 const RouterApp = () => {
   const { isAuthenticated } = useAuthContext();
@@ -16,15 +19,33 @@ const RouterApp = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
 
-        {/* <Route
-          path="/tourpage"
+        {/* Protected User Routes */}
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <TourPage />
+              <UserDashboard />
             </ProtectedRoute>
           }
         />
         <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/order"
+          element={
+            <ProtectedRoute>
+              <OrderPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* <Route
           path="/bookmark"
           element={
             <ProtectedRoute>

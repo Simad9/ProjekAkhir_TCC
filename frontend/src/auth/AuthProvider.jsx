@@ -4,8 +4,22 @@ import Cookies from "js-cookie";
 import axios from "../api/AxiosInstance";
 import PropTypes from "prop-types";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
 const AuthContext = createContext();
+
+// Function to decode JWT token
+const decodeJWT = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Error decoding JWT token:', error);
+    return null;
+  }
+};
 
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
@@ -13,17 +27,66 @@ export const AuthProvider = ({ children }) => {
     const savedUserName = localStorage.getItem('userName');
     return savedUserName || null;
   });
+  const [userId, setUserId] = useState(() => {
+    const savedUserId = localStorage.getItem('userId');
+    return savedUserId || null;
+  });
 
   const login = async (username, password) => {
     try {
-      const res = await axios.post(`${BASE_URL}/login`, { username, password });
-      console.log('Login response:', res.data.data);
+      const res = await axios.post('/api/login', { username, password });
+      console.log('Login response:', res.data);
+      console.log('Login response structure:', JSON.stringify(res.data, null, 2));
 
-      const token = res.data.data.token;
-      const user = res.data.data.username;
+      const token = res.data.data?.token || res.data.token;
+      const user = res.data.data?.username || res.data.username;
+      
+      // Try to get userId from response first, then decode JWT token
+      let userIdFromToken = 
+        res.data.data?.id_user || 
+        res.data.data?.userId || 
+        res.data.data?.user_id ||
+        res.data.id_user || 
+        res.data.userId || 
+        res.data.user_id ||
+        null;
+
+      // If no userId in response, decode JWT token to get userId
+      if (!userIdFromToken && token) {
+        console.log('No userId in response, decoding JWT token...');
+        const decodedToken = decodeJWT(token);
+        console.log('Decoded JWT payload:', decodedToken);
+        
+        if (decodedToken) {
+          userIdFromToken = 
+            decodedToken.userId || 
+            decodedToken.id_user || 
+            decodedToken.user_id ||
+            null;
+        }
+      }
+
+      console.log('Extracted values:');
+      console.log('- token:', token);
+      console.log('- user:', user);
+      console.log('- userIdFromToken:', userIdFromToken);
 
       localStorage.setItem('accessToken', token);
       localStorage.setItem('userName', user);
+      
+      if (userIdFromToken) {
+        localStorage.setItem('userId', userIdFromToken.toString());
+        setUserId(userIdFromToken.toString());
+        console.log('UserId saved to localStorage:', userIdFromToken.toString());
+      } else {
+        console.warn('No userId found in login response OR JWT token!');
+        // Fallback: use a default userId for testing
+        const fallbackUserId = '10';
+        localStorage.setItem('userId', fallbackUserId);
+        setUserId(fallbackUserId);
+        console.log('Using fallback userId:', fallbackUserId);
+      }
+      
       setAccessToken(token);
       setUserName(user);
 
@@ -37,21 +100,24 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Panggil endpoint logout jika ada
-      await axios.post(`${BASE_URL}/logout`);
+      await axios.post('/api/logout');
     } catch (err) {
       console.error("Logout failed:", err);
     } finally {
       // Bersihkan state dan storage
       setAccessToken(null);
       setUserId(null);
+      setUserName(null);
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userId');
       Cookies.remove("refreshToken");
     }
   };
 
   const refreshToken = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/token`, {
+      const res = await axios.get('/api/token', {
         withCredentials: true // Penting untuk mengirim cookies
       });
 
@@ -72,15 +138,23 @@ export const AuthProvider = ({ children }) => {
     return !!token;
   };
 
+  const updateUsername = (newUsername) => {
+    setUserName(newUsername);
+    localStorage.setItem('userName', newUsername);
+    console.log('Username updated in context:', newUsername);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         accessToken,
         username,
+        userId,
         login,
         logout,
         refreshToken,
-        isAuthenticated
+        isAuthenticated,
+        updateUsername
       }}
     >
       {children}

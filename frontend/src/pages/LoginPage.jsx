@@ -19,7 +19,7 @@ const LoginPage = () => {
     try {
       const result = await login(username, password);
       if (result) {
-        navigate("/home");
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error("Login Error:", error);
