@@ -5,14 +5,14 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# COPY kode sumber setelah install dependencies agar build cache maksimal
-COPY . .
+# Menyalin semua kode sumber setelah install dependencies agar build cache maksimal
+COPY . ./
 
 # Jalankan prisma generate untuk generate prisma client
 RUN npx prisma generate
 
-# Jalankan cat .env
-RUN cat .env
+# Menyalin .env jika dibutuhkan di dalam container
+COPY .env ./
 
 EXPOSE 5000
 
