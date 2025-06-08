@@ -1,10 +1,10 @@
 steps:
   # 1. Download .env dari Cloud Storage
-  # Ngambil data env yg disimpen di cloud storage pake gsuri
   - name: "gcr.io/cloud-builders/gsutil"
     args: ["cp", "gs://tcc-projek-akhir/.env", ".env"]
+    dir: "backend"
 
-  # 2. Build Docker image untuk backend
+  # 3. Build Docker image untuk backend
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
@@ -17,21 +17,25 @@ steps:
       ]
     dir: "backend"
 
-  # 3. Push ke Container Registry / Artifact Registry
+  # 4. Push ke Container Registry / Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}"]
 
-  # 4. Deploy ke Cloud Run
+  # 5. Deploy ke Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
     entrypoint: gcloud
     args: [
         "run",
         "deploy",
         "tcc-projek-akhir",
-        "--image",        "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
-        "--timeout",        "1000s",
-        "--port",        "5000", # optional, sesuai port app listen
-        "--region",        "us-central1",
+        "--image",
+        "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
+        "--timeout",
+        "1000s",
+        "--port",
+        "5000", # optional, sesuai port app listen
+        "--region",
+        "us-central1",
         "--allow-unauthenticated",
         "--set-env-vars",
         "DATABASE_URL=${_DATABASE_URL}",
