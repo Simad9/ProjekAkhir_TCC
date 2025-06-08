@@ -2,7 +2,7 @@ steps:
   # 1. Download .env dari Cloud Storage
   # Ngambil data env yg disimpen di cloud storage pake gsuri
   - name: "gcr.io/cloud-builders/gsutil"
-    args: ["cp", "gs://prak-tcc-projek-akhir/.env", ".env"]
+    args: ["cp", "gs://tcc-projek-akhir/.env", ".env"]
 
   # 2. Build Docker image untuk backend
   - name: "gcr.io/cloud-builders/docker"
