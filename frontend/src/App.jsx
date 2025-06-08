@@ -1,8 +1,15 @@
+import { AuthProvider } from "./auth/AuthProvider";
+import Router from "./routes/RouterApp"; // halaman-halaman
+import AxiosInterceptor from "./api/AxiosInterceptor";
+import "./css/index.css";
+
 function App() {
   return (
-    <>
-      <h1>Test</h1>
-    </>
+    <AuthProvider>
+      <AxiosInterceptor>
+        <Router />
+      </AxiosInterceptor>
+    </AuthProvider>
   )
 }
 
