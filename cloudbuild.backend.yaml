@@ -10,13 +10,12 @@ steps:
       [
         "build",
         "--cache-from",
-        "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
+        "gcr.io/$PROJECT_ID/tcc-projek-akhir",
         "-t",
         "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
-        "-f",
-        "path/to/Dockerfile",
         ".",
       ]
+    dir: "backend"
 
   # 3. Push ke Container Registry / Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
@@ -29,14 +28,10 @@ steps:
         "run",
         "deploy",
         "tcc-projek-akhir",
-        "--image",
-        "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
-        "--timeout",
-        "1000s",
-        "--port",
-        "5000", # optional, sesuai port app listen
-        "--region",
-        "us-central1",
+        "--image",        "gcr.io/$PROJECT_ID/tcc-projek-akhir:${SHORT_SHA}",
+        "--timeout",        "1000s",
+        "--port",        "5000", # optional, sesuai port app listen
+        "--region",        "us-central1",
         "--allow-unauthenticated",
         # "--set-env-vars",
         # "ACCESS_TOKEN_SECRET=${_ACCESS_TOKEN_SECRET},REFRESH_TOKEN_SECRET=${_REFRESH_TOKEN_SECRET},DATABASE_URL=${_DATABASE_URL},CLAUD_NAME_CLOUDINARY=${_CLAUD_NAME_CLOUDINARY},API_KEY_CLOUDINARY=${_API_KEY_CLOUDINARY},API_SECRET_CLOUDINARY=${_API_SECRET_CLOUDINARY}",
