@@ -1,4 +1,4 @@
-GET http://localhost:5000/api/menu
+POST http://localhost:5000/api/login
 Content-Type: application/json
 
 {
@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ###
-GET https://tcc-projek-akhir-13926268988.us-central1.run.app/api/menu
+GET https://tcc-projek-akhir-13926268988.us-central1.run.app/api/login
 Content-Type: application/json
 
 
