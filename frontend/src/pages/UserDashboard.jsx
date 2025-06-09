@@ -8,7 +8,7 @@ import { FiUser, FiShoppingCart, FiLogOut, FiClock, FiStar } from "react-icons/f
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { username, userId, logout } = useAuthContext();
-  
+
   const [menuItems, setMenuItems] = useState([]);
   const [isLoadingMenu, setIsLoadingMenu] = useState(true);
 
@@ -21,16 +21,16 @@ const UserDashboard = () => {
       try {
         setIsLoadingMenu(true);
         console.log('Fetching menu items and categories for dashboard...');
-        
+
         // Fetch both menu and categories in parallel
         const [menuResponse, categoryResponse] = await Promise.all([
           menuService.getMenuItems(),
           menuService.getCategories()
         ]);
-        
+
         console.log('Dashboard Menu API response:', menuResponse);
         console.log('Dashboard Category API response:', categoryResponse);
-        
+
         // Create category mapping
         let categoryMap = {};
         if (categoryResponse && (categoryResponse.success || categoryResponse.data || Array.isArray(categoryResponse))) {
@@ -38,7 +38,7 @@ const UserDashboard = () => {
           if (Array.isArray(categoryResponse)) {
             categoryData = categoryResponse;
           }
-          
+
           if (Array.isArray(categoryData)) {
             categoryData.forEach(cat => {
               const id = cat.id_kategori || cat.id;
@@ -49,26 +49,26 @@ const UserDashboard = () => {
           }
         }
         console.log('Dashboard Final category map:', categoryMap);
-        
+
         if (menuResponse && (menuResponse.success || menuResponse.data || Array.isArray(menuResponse))) {
           let menuData = menuResponse.data || menuResponse;
-          
+
           // Handle if response is directly an array
           if (Array.isArray(menuResponse)) {
             menuData = menuResponse;
           }
-          
+
           console.log('Dashboard Menu data:', menuData);
-          
+
           if (Array.isArray(menuData) && menuData.length > 0) {
             // Transform API data to match database schema
             const transformedMenu = menuData.map(item => {
               console.log('Dashboard Processing menu item:', item);
-              
+
               // Get category name from category mapping using kategoriId_kategori
               let categoryName = 'Tidak dikategorikan';
               const categoryId = item.kategoriId_kategori || item.categoryId || item.kategori_id;
-              
+
               if (categoryId && categoryMap[categoryId]) {
                 categoryName = categoryMap[categoryId];
               } else if (item.nama_kategori) {
@@ -80,9 +80,9 @@ const UserDashboard = () => {
               } else if (item.category) {
                 categoryName = item.category;
               }
-              
+
               console.log(`Dashboard Item ${item.nama_menu} - categoryId: ${categoryId}, categoryName: ${categoryName}`);
-              
+
               return {
                 id: item.id_menu || item.id,
                 name: item.nama_menu || item.name || 'Menu',
@@ -128,15 +128,15 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchRecentOrders = async () => {
       if (!userId) return;
-      
+
       try {
         setIsLoadingOrders(true);
         console.log('Fetching order history for userId:', userId);
-        
+
         // Ambil riwayat pesanan
         const response = await orderService.getOrderHistory(userId);
         console.log('Order history response:', response);
-        
+
         if (response.success && response.data) {
           // Urutkan berdasarkan yang terbaru
           const sortedOrders = response.data.sort((a, b) => {
@@ -144,7 +144,7 @@ const UserDashboard = () => {
             const dateB = new Date(b.createdAt || b.updatedAt);
             return dateB - dateA; // Terbaru dulu
           });
-          
+
           // Ambil detail pesanan dengan info menu
           const ordersWithDetails = await Promise.all(
             sortedOrders.map(async (order) => {
@@ -152,7 +152,7 @@ const UserDashboard = () => {
                 // Ambil detail pesanan (Pesan_Detail) untuk order ini
                 const detailsResponse = await orderService.getOrderDetails(order.id_pesanan);
                 console.log(`Details for order ${order.id_pesanan}:`, detailsResponse);
-                
+
                 let itemsText = "Menu tidak tersedia";
                 if (detailsResponse && detailsResponse.data && detailsResponse.data.length > 0) {
                   // Format daftar menu
@@ -161,7 +161,7 @@ const UserDashboard = () => {
                     return `${menuName} (${detail.jumlah}x)`;
                   }).join(', ');
                 }
-                
+
                 return {
                   id: order.id_pesanan,
                   date: order.createdAt || order.updatedAt,
@@ -181,7 +181,7 @@ const UserDashboard = () => {
               }
             })
           );
-          
+
           console.log('Transformed orders with details:', ordersWithDetails);
           setRecentOrders(ordersWithDetails);
         }
@@ -290,7 +290,7 @@ const UserDashboard = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Menu Populer</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {isLoadingMenu ? (
                   // Loading
@@ -313,7 +313,8 @@ const UserDashboard = () => {
                     <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
                       <div className="h-48 bg-gray-200 relative">
                         <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                          <span className="text-sm">Menu Image</span>
+                          <img src={item.image ?? "https://placehold.co/400"} alt="" className="w-full h-full object-cover" />
+                          {/* <span className="text-sm">Menu Image</span> */}
                         </div>
                       </div>
                       <div className="p-4">
@@ -346,13 +347,13 @@ const UserDashboard = () => {
                           <li>• Pastikan API endpoint /api/menu tersedia</li>
                         </ul>
                         <div className="mt-3 space-y-2">
-                          <button 
+                          <button
                             onClick={() => apiTester.testMenuEndpoint()}
                             className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
                           >
                             Test API Endpoints
                           </button>
-                          <button 
+                          <button
                             onClick={() => apiTester.testServerHealth()}
                             className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 ml-2"
                           >
@@ -381,7 +382,7 @@ const UserDashboard = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Riwayat Pesanan</h3>
-              
+
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {isLoadingOrders ? (
                   // Loading untuk pesanan
@@ -402,13 +403,12 @@ const UserDashboard = () => {
                         <span className="text-sm text-gray-500">
                           {new Date(order.date).toLocaleDateString('id-ID')}
                         </span>
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          order.status === 'Selesai' 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`text-xs px-2 py-1 rounded ${order.status === 'Selesai'
+                            ? 'bg-green-100 text-green-800'
                             : order.status === 'Proses'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {order.status}
                         </span>
                       </div>
