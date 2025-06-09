@@ -7,7 +7,7 @@ import { FiArrowLeft, FiPlus, FiMinus, FiShoppingCart, FiStar, FiClock, FiDollar
 const OrderPage = () => {
   const navigate = useNavigate();
   const { username, userId } = useAuthContext();
-  
+
   const [menuItems, setMenuItems] = useState([]);
   const [isLoadingMenu, setIsLoadingMenu] = useState(true);
 
@@ -21,16 +21,16 @@ const OrderPage = () => {
       try {
         setIsLoadingMenu(true);
         console.log('Fetching menu items and categories for order page...');
-        
+
         // Fetch both menu and categories in parallel
         const [menuResponse, categoryResponse] = await Promise.all([
           menuService.getMenuItems(),
           menuService.getCategories()
         ]);
-        
+
         console.log('Menu API response:', menuResponse);
         console.log('Category API response:', categoryResponse);
-        
+
         // Create category mapping
         let categoryMap = {};
         if (categoryResponse && (categoryResponse.success || categoryResponse.data || Array.isArray(categoryResponse))) {
@@ -38,7 +38,7 @@ const OrderPage = () => {
           if (Array.isArray(categoryResponse)) {
             categoryData = categoryResponse;
           }
-          
+
           if (Array.isArray(categoryData)) {
             categoryData.forEach(cat => {
               const id = cat.id_kategori || cat.id;
@@ -49,28 +49,28 @@ const OrderPage = () => {
           }
         }
         console.log('Final category map:', categoryMap);
-        
+
         // Process menu data
         if (menuResponse && (menuResponse.success || menuResponse.data || Array.isArray(menuResponse))) {
           let menuData = menuResponse.data || menuResponse;
-          
+
           // Handle if response is directly an array
           if (Array.isArray(menuResponse)) {
             menuData = menuResponse;
           }
-          
+
           if (Array.isArray(menuData) && menuData.length > 0) {
             console.log('Raw menu data for transformation:', menuData);
             console.log('First menu item example:', menuData[0]);
-            
+
             // Transform API data to match database schema
             const transformedMenu = menuData.map(item => {
               console.log('Processing menu item:', item);
-              
+
               // Get category name from category mapping using kategoriId_kategori
               let categoryName = 'Tidak dikategorikan';
               const categoryId = item.kategoriId_kategori || item.categoryId || item.kategori_id;
-              
+
               if (categoryId && categoryMap[categoryId]) {
                 categoryName = categoryMap[categoryId];
               } else if (item.nama_kategori) {
@@ -82,9 +82,9 @@ const OrderPage = () => {
               } else if (item.category) {
                 categoryName = item.category;
               }
-              
+
               console.log(`Item ${item.nama_menu} - categoryId: ${categoryId}, categoryName: ${categoryName}`);
-              
+
               return {
                 id: item.id_menu || item.id,
                 name: item.nama_menu || item.name || 'Menu',
@@ -95,7 +95,7 @@ const OrderPage = () => {
                 available: true // Default available since not in database schema
               };
             });
-            
+
             console.log('Transformed menu with categories:', transformedMenu);
             setMenuItems(transformedMenu);
           } else {
@@ -121,8 +121,8 @@ const OrderPage = () => {
   console.log('Final categories for filter buttons:', categories);
 
   // Filter menu items by category
-  const filteredMenuItems = selectedCategory === "Semua" 
-    ? menuItems 
+  const filteredMenuItems = selectedCategory === "Semua"
+    ? menuItems
     : menuItems.filter(item => item.category === selectedCategory);
 
   const addToCart = (item) => {
@@ -141,7 +141,7 @@ const OrderPage = () => {
   };
 
   const updateCartItemNote = (itemId, note) => {
-    setCart(prevCart => 
+    setCart(prevCart =>
       prevCart.map(cartItem =>
         cartItem.id === itemId ? { ...cartItem, note } : cartItem
       )
@@ -201,7 +201,7 @@ const OrderPage = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
       const orderData = {
         userId_user: parseInt(userIdToUse),
@@ -215,17 +215,17 @@ const OrderPage = () => {
       };
 
       console.log("Submitting order:", orderData);
-      
+
       // Coba kirim ke API
       try {
         const response = await orderService.submitOrder(orderData);
         console.log("Order submitted successfully:", response);
-        
+
         // Hanya tampilkan sukses jika API call berhasil
         setShowOrderModal(true);
       } catch (apiError) {
         console.error("Order submission failed:", apiError);
-        
+
         // Tampilkan pesan error spesifik
         if (apiError.response?.status === 500) {
           alert("Server error: Gagal membuat pesanan. Silakan coba lagi atau hubungi admin.");
@@ -236,7 +236,7 @@ const OrderPage = () => {
         }
         return; // Jangan tampilkan modal sukses
       }
-      
+
     } catch (error) {
       console.error("Order submission error:", error);
       alert("Gagal mengirim pesanan. Silakan coba lagi.");
@@ -293,11 +293,10 @@ const OrderPage = () => {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                      selectedCategory === category
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition ${selectedCategory === category
                         ? "bg-blue-600 text-white"
                         : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
-                    }`}
+                      }`}
                   >
                     {category}
                   </button>
@@ -311,7 +310,8 @@ const OrderPage = () => {
                 <div key={item.id} className={`bg-white rounded-xl shadow-lg overflow-hidden ${!item.available ? 'opacity-60' : ''}`}>
                   <div className="h-48 bg-gray-200 relative">
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                      <span className="text-sm">Menu Image</span>
+                      <img src={item.image ?? "https://placehold.co/400"} alt="" className="w-full h-full object-cover" />
+                      {/* <span className="text-sm">Menu Image</span> */}
                     </div>
                     {!item.available && (
                       <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
@@ -319,7 +319,7 @@ const OrderPage = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-semibold text-gray-900">{item.name}</h3>
@@ -327,9 +327,9 @@ const OrderPage = () => {
                         {item.category}
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-600 text-sm mb-3">{item.description}</p>
-                    
+
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-lg font-bold text-blue-600">
                         {formatPrice(item.price)}
@@ -380,7 +380,7 @@ const OrderPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Keranjang Pesanan</h3>
-              
+
               {cart.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <FiShoppingCart className="w-12 h-12 mx-auto mb-2 opacity-50" />
@@ -416,7 +416,7 @@ const OrderPage = () => {
                             </button>
                           </div>
                         </div>
-                        
+
                         {/* Per-item note */}
                         <div className="mt-2">
                           <textarea
@@ -481,7 +481,7 @@ const OrderPage = () => {
                 Pesanan Berhasil!
               </h3>
               <p className="text-gray-600 mb-6">
-                Pesanan Anda telah diterima dan sedang diproses. 
+                Pesanan Anda telah diterima dan sedang diproses.
                 Anda akan mendapat notifikasi ketika pesanan siap.
               </p>
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
