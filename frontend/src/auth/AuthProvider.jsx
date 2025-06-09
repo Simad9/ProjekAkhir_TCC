@@ -31,6 +31,9 @@ export const AuthProvider = ({ children }) => {
     const savedUserId = localStorage.getItem('userId');
     return savedUserId || null;
   });
+  const [role, setRole] = useState(() => {
+    return localStorage.getItem('userRole') || null;
+  });
 
   const login = async (username, password) => {
     try {
@@ -40,6 +43,7 @@ export const AuthProvider = ({ children }) => {
 
       const token = res.data.data?.token || res.data.token;
       const user = res.data.data?.username || res.data.username;
+      const role = res.data.data?.role || res.data.role;
       
       // Try to get userId from response first, then decode JWT token
       let userIdFromToken = 
@@ -73,6 +77,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem('accessToken', token);
       localStorage.setItem('userName', user);
+      localStorage.setItem('userRole', role);
       
       if (userIdFromToken) {
         localStorage.setItem('userId', userIdFromToken.toString());
@@ -89,6 +94,7 @@ export const AuthProvider = ({ children }) => {
       
       setAccessToken(token);
       setUserName(user);
+      setRole(role);
 
       return res.data;
     } catch (err) {
@@ -108,9 +114,11 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(null);
       setUserId(null);
       setUserName(null);
+      setRole(null);
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userName');
       localStorage.removeItem('userId');
+      localStorage.removeItem('userRole');
       Cookies.remove("refreshToken");
     }
   };
@@ -144,17 +152,17 @@ export const AuthProvider = ({ children }) => {
     console.log('Username updated in context:', newUsername);
   };
 
+  // Make sure role is included in the context value
   return (
     <AuthContext.Provider
       value={{
         accessToken,
         username,
         userId,
+        role, // Add role to context
         login,
         logout,
-        refreshToken,
-        isAuthenticated,
-        updateUsername
+        isAuthenticated
       }}
     >
       {children}

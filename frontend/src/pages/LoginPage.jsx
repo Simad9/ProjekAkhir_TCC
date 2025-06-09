@@ -19,7 +19,13 @@ const LoginPage = () => {
     try {
       const result = await login(username, password);
       if (result) {
-        navigate("/dashboard");
+        // Check user role and redirect accordingly
+        const userRole = localStorage.getItem('userRole');
+        if (userRole === 'admin') {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (error) {
       console.error("Login Error:", error);

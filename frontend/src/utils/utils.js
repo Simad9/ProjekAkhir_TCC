@@ -1,0 +1,1 @@
+export const BASE_URL = "https://tcc-projek-akhir-13926268988.us-central1.run.app/api";

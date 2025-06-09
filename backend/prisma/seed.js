@@ -19,12 +19,12 @@ async function main() {
   // await prisma.pesan_Detail.deleteMany();
   // await prisma.keranjang.deleteMany();
   // Seeder
-  // await seedUsers();
-  // await seedKategori();
-  // await seedMenu();
-  // await seedPesanan();
-  // await seedPesanDetail();
-  // await seedKeranjang();
+  await seedUsers();
+  await seedKategori();
+  await seedMenu();
+  await seedPesanan();
+  await seedPesanDetail();
+  await seedKeranjang();
 }
 
 main()
