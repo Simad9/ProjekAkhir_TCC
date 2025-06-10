@@ -12,6 +12,7 @@ dotenv.config();
 const corsOptions = {
   origin: [
     "http://localhost:3000", // Tambahkan localhost untuk pengembangan lokal
+    "http://35.224.10.244", // Frontend yang di-deploy ke VM
   ],
   credentials: true, // Memungkinkan penggunaan cookies
   methods: ["GET", "POST", "PUT", "DELETE"],
