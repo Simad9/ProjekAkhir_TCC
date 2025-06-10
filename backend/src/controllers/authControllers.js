@@ -1,5 +1,5 @@
 const User = require("../models/userModels");
-const bycrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -25,7 +25,7 @@ const register = async (req, res) => {
     }
 
     // Hash Password
-    data.password = bycrypt.hashSync(data.password, 5);
+    data.password = bcrypt.hashSync(data.password, 5);
 
     const dataForm = {
       username: data.username,
@@ -62,7 +62,7 @@ const login = async (req, res) => {
     }
 
     // Compate Password
-    if (!bycrypt.compareSync(data.password, result.password)) {
+    if (!bcrypt.compareSync(data.password, result.password)) {
       return res.status(401).json({
         message: "Password Salah",
       });
